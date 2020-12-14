@@ -1,6 +1,6 @@
 import random
-
-# Using dictionaries to store the snakes and ladders on the board
+ 
+# Storing of snakes and ladders done using dictionaries
 # ladders move you up from the key to value
 # Snakes move you down from the key to value
 ladders = {7: 14,
@@ -13,7 +13,7 @@ ladders = {7: 14,
     67: 80,
     70: 74,
     75: 90,}
-
+ 
 snakes = {10: 2,
     12: 9,
     18: 13,
@@ -25,99 +25,79 @@ snakes = {10: 2,
     78: 69,
     99: 81,}
 
+ 
+# final position on board to win game
 max_num = 100
-
-def welcome_msg():
-    """Start message explain the rules"""
-    msg = """Welcome to Snakes and Ladders
-    Rules:
-    Two players
-    Take turns to roll a six sided dice and move forward the number of positions shown on the dice
-    Start at position 0
-    The first player that reaches the final spot, 100, wins the game
-    A cell on the board cannot contain both a snake and a ladder
-    If you land at the bottom of the ladder you move to the top of the ladder
-    If you land on the head of the snake you must slide down to the tail of the snake"""
-    print(msg)
-
+	  
 def player_name():
-    """Establishing player name"""
+    """Establishing players"""
     player_1_name = ("Player A")
     player_2_name = ("Player B")
     print(player_1_name, "vs", player_2_name)
     return player_1_name, player_2_name
-
+	 
 def dice_num_roll():
+    """Dice roll function"""
     dice_num = random.randint(1, 6)
     print("        You rolled a ", str(dice_num))
     return dice_num
-
+	 
 def snake_bite(old_num, curr_num, player_name):
-    """When a player lands on a snake cell"""    
+    """When a player lands on a snake cell"""
     print("Unfortunately, you have landed on a snake, please go down")
     print(player_name, "moved from", str(old_num), "to", str(curr_num))
-
+	 
 def ladder_climb(old_num, curr_num, player_name):
     """When a player lands on a ladder cell"""
-    print("Wooo, you have landed on a ladder, please climb up")
-    print(player_name, "moved from", str(old_num), "to", str(curr_num))
-    
-
+    print("You have landed on a ladder, please climb up")
+    print(player_name, "moved from", str(old_num), "to", str(curr_num)) 
+	 
 def snakes_and_ladders_check(player_name, curr_num, dice_num):
-    """A method that checks for the presence of snakes and ladders on the board"""
-    old_num = curr_num
-    curr_num = curr_num + dice_num
-    
-    if curr_num > max_num:
-        print("Unlucky, you need to roll a", str(max_num - old_num), "to win the game so don't give up, keep rolling.")
+    """Method that checks for the presence of snakes and ladders on the board"""
+    old_num = curr_num # position on board
+    curr_num = curr_num + dice_num # position on board plus the dice roll 
+# to give new position
+	    
+    if curr_num > max_num: # when player rolls and goes over final number
+        print("Unlucky, you need to roll a", str(max_num - old_num), "to win the game.")
         return old_num
-    
     print("                ", player_name, "moved from", str(old_num), "to", str(curr_num))
-    if curr_num in snakes:
-        final_num = snakes.get(curr_num) # Returns the value of the specified key
-        snake_bite(curr_num, final_num, player_name)        
+    if curr_num in snakes: # accessing dictionary if lands on snake or 
+# ladder
+        final_num = snakes.get(curr_num) # .get - Returns the value of 
+# the specified key
+        snake_bite(curr_num, final_num, player_name)
     elif curr_num in ladders:
         final_num = ladders.get(curr_num)
         ladder_climb(curr_num, final_num, player_name)
     else:
         final_num = curr_num
-
     return final_num
-
+	 
 def win_check(player_name, pos):
     """Checks if player has met the win criteria"""
     if max_num == pos:
         print("""Congrats""", player_name, """, you have won the game!""")
-        raise SystemExit # to stop the code running thus ending the game 
-
-def start_game():
-    """The function to run the program and start the game"""
-    welcome_msg()
+        raise SystemExit 
+	 
+def begin_game():
+    """The function to start and run the game"""
     player_1_name, player_2_name = player_name()
-    
+# Starting positions
     player_1_curr_pos = 0
     player_2_curr_pos = 0
-    
-    player_A_roll_count = 0
-    player_B_roll_count = 0
-    
-    while True:
+    while True: # while loop to alternate player turns
         print(player_1_name + " its your turn")
-        print("    Rolling dice...")
         dice_num = dice_num_roll()
-        player_A_roll_count = player_A_roll_count + 1
-        print("--Player A has rolled the dice", player_A_roll_count, "times--")
-        print("            ", player_1_name, "is currently moving....")
+	# check if landed on snake
         player_1_curr_pos = snakes_and_ladders_check(player_1_name, player_1_curr_pos, dice_num)
+# check if player has won
         win_check(player_1_name, player_1_curr_pos)
-        
+	
+# repeat for second player        
         print(player_2_name + " its your turn")
-        print("    Rolling dice...")
         dice_num = dice_num_roll()
-        player_B_roll_count = player_B_roll_count + 1
-        print("--Player B has rolled the dice", player_B_roll_count, "times--")
-        print("            ", player_2_name, "is currently moving....")
         player_2_curr_pos = snakes_and_ladders_check(player_2_name, player_2_curr_pos, dice_num)
-        win_check(player_2_name, player_2_curr_pos)       
-
-start_game()
+        win_check(player_2_name, player_2_curr_pos)
+	        
+begin_game()
